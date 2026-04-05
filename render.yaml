@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: cardioinsight
+    env: python
+    buildCommand: |
+      pip install -r requirements.txt
+      python generate_data.py
+      python train_model.py
+      python charts.py
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: SECRET_KEY
+        generateValue: true

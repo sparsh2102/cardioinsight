@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+{% block title %}CardioInsight — Heart Disease Risk Assessment{% endblock %}
+{% block head %}
+<style>
+.hero{
+  min-height:88vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;
+  padding:60px 24px;position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(231,76,60,.18) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(231,76,60,.12);border:1px solid rgba(231,76,60,.3);
+  color:var(--red);font-size:13px;font-weight:600;
+  padding:6px 14px;border-radius:50px;margin-bottom:28px;
+  animation:fadeUp .6s ease both;
+}
+.hero h1{
+  font-family:'Syne',sans-serif;font-size:clamp(42px,7vw,80px);
+  font-weight:800;line-height:1.05;color:var(--white);
+  animation:fadeUp .6s .1s ease both;
+}
+.hero h1 span{color:var(--red)}
+.hero p{
+  margin-top:20px;max-width:560px;font-size:18px;line-height:1.6;
+  color:var(--muted);animation:fadeUp .6s .2s ease both;
+}
+.hero-cta{margin-top:36px;display:flex;gap:16px;animation:fadeUp .6s .3s ease both}
+.pulse{
+  position:relative;display:inline-block;
+}
+.pulse::after{
+  content:'';position:absolute;inset:-4px;border-radius:14px;
+  border:2px solid var(--red);opacity:0;
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.12);opacity:0}}
+
+.stats-band{
+  background:var(--surface);border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);padding:40px 0;
+}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border)}
+.stat-item{background:var(--surface);padding:28px 24px;text-align:center}
+.stat-num{font-family:'Syne',sans-serif;font-size:38px;font-weight:800;color:var(--white)}
+.stat-label{margin-top:6px;font-size:13px;color:var(--muted);font-weight:500}
+
+.features{padding:80px 0}
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:48px}
+.feature-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:28px;
+  transition:.3s;cursor:default;
+}
+.feature-card:hover{border-color:rgba(231,76,60,.5);transform:translateY(-4px);box-shadow:var(--shadow)}
+.feature-icon{font-size:36px;margin-bottom:16px}
+.feature-title{font-size:17px;font-weight:700;color:var(--white);margin-bottom:10px}
+.feature-desc{font-size:14px;color:var(--muted);line-height:1.6}
+
+.cta-band{
+  background:linear-gradient(135deg,#1a0808 0%,#2d0e0e 100%);
+  border:1px solid rgba(231,76,60,.3);border-radius:20px;
+  padding:60px 40px;text-align:center;margin:0 0 80px;
+}
+.cta-band h2{font-family:'Syne',sans-serif;font-size:36px;font-weight:800;color:var(--white);margin-bottom:12px}
+.cta-band p{color:var(--muted);font-size:16px;margin-bottom:28px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+</style>
+{% endblock %}
+{% block content %}
+
+<section class="hero">
+  <div class="hero-eyebrow">❤️ AI-Powered Cardiovascular Assessment</div>
+  <h1>Know Your <span>Heart Risk</span><br>Before It's Too Late</h1>
+  <p>CardioInsight uses a Machine Learning model trained on 10,000 patient records to give you a personalized cardiovascular risk score in under 2 minutes.</p>
+  <div class="hero-cta">
+    {% if session.user_id %}
+    <div class="pulse">
+      <a href="/assessment" class="btn btn-red" style="font-size:16px;padding:14px 28px">🫀 Start Assessment</a>
+    </div>
+    <a href="/analytics" class="btn btn-outline" style="font-size:16px;padding:14px 28px">📊 View Analytics</a>
+    {% else %}
+    <div class="pulse">
+      <a href="/register" class="btn btn-red" style="font-size:16px;padding:14px 28px">🚀 Get Started Free</a>
+    </div>
+    <a href="/login" class="btn btn-outline" style="font-size:16px;padding:14px 28px">Login</a>
+    {% endif %}
+  </div>
+</section>
+
+<section class="stats-band">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-num" style="color:var(--red)">10,000</div>
+        <div class="stat-label">Patient Records Analyzed</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" style="color:var(--green)">87.90%</div>
+        <div class="stat-label">ML Model Accuracy</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" style="color:var(--orange)">44.9%</div>
+        <div class="stat-label">High Cholesterol Rate Found</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" style="color:var(--blue)">46.3%</div>
+        <div class="stat-label">High Blood Pressure Rate</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="features">
+  <div class="container">
+    <div class="page-header" style="padding-top:0">
+      <h2 class="page-title">Everything You <span>Need</span></h2>
+      <p class="page-sub">A complete cardiovascular health monitoring platform</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🤖</div>
+        <div class="feature-title">ML Risk Prediction</div>
+        <div class="feature-desc">Random Forest model with 87.90% accuracy trained on real patient data. Not just a simple formula.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <div class="feature-title">Analytics Dashboard</div>
+        <div class="feature-desc">7 interactive charts — age risk, cholesterol distribution, scatter plots, correlation heatmap and more.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📄</div>
+        <div class="feature-title">Downloadable PDF Report</div>
+        <div class="feature-desc">Professional PDF with risk score, health indicators table, and personalized recommendations to share with your doctor.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔐</div>
+        <div class="feature-title">Secure User Accounts</div>
+        <div class="feature-desc">Register, login, and track your assessment history over time. Password hashed with industry-standard Werkzeug security.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📚</div>
+        <div class="feature-title">Disease Library</div>
+        <div class="feature-desc">6 cardiovascular conditions explained — symptoms, prevention tips, and what to watch out for.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">✅</div>
+        <div class="feature-title">Input Validation</div>
+        <div class="feature-desc">Full server-side validation ensures accurate, medically plausible inputs before any calculation.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container">
+  <div class="cta-band">
+    <h2>Ready to Check Your Heart Health?</h2>
+    <p>Free, private, and takes less than 2 minutes.</p>
+    {% if session.user_id %}
+    <a href="/assessment" class="btn btn-red" style="font-size:16px;padding:14px 32px">Start Your Assessment →</a>
+    {% else %}
+    <a href="/register" class="btn btn-red" style="font-size:16px;padding:14px 32px">Create Free Account →</a>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

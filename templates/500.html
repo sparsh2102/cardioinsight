@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Server Error — CardioInsight{% endblock %}
+{% block content %}
+<div style="min-height:70vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:40px">
+  <div>
+    <div style="font-size:96px;line-height:1">⚠️</div>
+    <h1 style="font-family:'Syne',sans-serif;font-size:80px;font-weight:800;color:var(--orange);margin:16px 0 8px">500</h1>
+    <h2 style="font-size:24px;color:var(--white);margin-bottom:12px">Internal Server Error</h2>
+    <p style="color:var(--muted);font-size:16px;margin-bottom:32px">Something went wrong on our end. Please try again.</p>
+    <a href="/" class="btn btn-red" style="font-size:15px;padding:13px 28px">← Back to Home</a>
+  </div>
+</div>
+{% endblock %}

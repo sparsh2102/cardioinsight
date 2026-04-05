@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}CardioInsight{% endblock %}</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0c14;--surface:#111422;--card:#161929;--border:#1e2235;
+  --red:#e74c3c;--red2:#c0392b;--orange:#f39c12;--green:#27ae60;
+  --blue:#3498db;--purple:#9b59b6;
+  --text:#e8eaf0;--muted:#7a7f9a;--white:#ffffff;
+  --radius:14px;--shadow:0 8px 32px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+a{color:inherit;text-decoration:none}
+
+/* NAV */
+nav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(10,12,20,.92);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 32px;height:64px;
+}
+.nav-brand{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--white)}
+.nav-brand span{color:var(--red)}
+.nav-links{display:flex;gap:4px;align-items:center}
+.nav-links a{padding:8px 14px;border-radius:8px;font-size:14px;font-weight:500;color:var(--muted);transition:.2s}
+.nav-links a:hover,.nav-links a.active{color:var(--white);background:var(--card)}
+.nav-user{display:flex;align-items:center;gap:12px}
+.nav-user .greeting{font-size:13px;color:var(--muted)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:10px;font-family:inherit;font-size:14px;font-weight:600;border:none;cursor:pointer;transition:.2s;text-decoration:none}
+.btn-red{background:var(--red);color:#fff}.btn-red:hover{background:var(--red2);transform:translateY(-1px)}
+.btn-outline{background:transparent;color:var(--text);border:1px solid var(--border)}.btn-outline:hover{border-color:var(--red);color:var(--red)}
+.btn-sm{padding:7px 14px;font-size:13px}
+
+/* FLASH */
+.flashes{position:fixed;top:72px;right:20px;z-index:200;display:flex;flex-direction:column;gap:8px;max-width:340px}
+.flash{padding:12px 16px;border-radius:10px;font-size:13px;font-weight:500;animation:slideIn .3s ease}
+.flash-success{background:#1a3a26;color:#4ade80;border:1px solid #2d5a3d}
+.flash-error{background:#3a1a1a;color:#f87171;border:1px solid #5a2d2d}
+.flash-info{background:#1a2a3a;color:#60a5fa;border:1px solid #2d4a5a}
+@keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+
+/* LAYOUT */
+.container{max-width:1200px;margin:0 auto;padding:0 24px}
+.page-header{padding:48px 0 32px;text-align:center}
+.page-title{font-family:'Syne',sans-serif;font-size:40px;font-weight:800;color:var(--white)}
+.page-title span{color:var(--red)}
+.page-sub{margin-top:10px;color:var(--muted);font-size:16px}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px}
+.card-title{font-size:16px;font-weight:600;color:var(--white);margin-bottom:16px}
+
+/* FOOTER */
+footer{margin-top:80px;border-top:1px solid var(--border);padding:28px;text-align:center;color:var(--muted);font-size:13px}
+footer b{color:var(--red)}
+</style>
+{% block head %}{% endblock %}
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-brand">Cardio<span>Insight</span></a>
+  <div class="nav-links">
+    <a href="/" {% if request.endpoint=='index' %}class="active"{% endif %}>Home</a>
+    <a href="/library" {% if request.endpoint=='library' %}class="active"{% endif %}>Disease Library</a>
+    {% if session.user_id %}
+    <a href="/assessment" {% if request.endpoint=='assessment' %}class="active"{% endif %}>Assessment</a>
+    <a href="/analytics" {% if request.endpoint=='analytics' %}class="active"{% endif %}>Analytics</a>
+    <a href="/dashboard" {% if request.endpoint=='dashboard' %}class="active"{% endif %}>Dashboard</a>
+    {% endif %}
+  </div>
+  <div class="nav-user">
+    {% if session.user_id %}
+      <a href="/profile" style="display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:8px;color:var(--muted);font-size:13px;transition:.2s" onmouseover="this.style.color='white'" onmouseout="this.style.color=''">👤 {{ session.user_name }}</a>
+      <a href="/logout" class="btn btn-outline btn-sm">Logout</a>
+    {% else %}
+      <a href="/login" class="btn btn-outline btn-sm">Login</a>
+      <a href="/register" class="btn btn-red btn-sm">Register</a>
+    {% endif %}
+  </div>
+</nav>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="flashes">
+  {% for cat,msg in messages %}
+  <div class="flash flash-{{cat}}">{{ msg }}</div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+{% block content %}{% endblock %}
+
+<footer>
+  <b>CardioInsight</b> — Heart Disease Risk Assessment System &nbsp;|&nbsp;
+  Presented by Satyam Kumar &amp; Sparsh Goyal, BCA 3rd Year &nbsp;|&nbsp;
+  Model Accuracy: <b style="color:var(--green)">87.90%</b>
+</footer>
+<script>
+setTimeout(()=>{
+  document.querySelectorAll('.flash').forEach(el=>{
+    el.style.transition='opacity .5s';el.style.opacity='0';
+    setTimeout(()=>el.remove(),500);
+  });
+},4000);
+</script>
+</body>
+</html>

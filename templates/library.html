@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}Disease Library — CardioInsight{% endblock %}
+{% block head %}
+<style>
+.library-wrap{max-width:1100px;margin:0 auto;padding:40px 24px 80px}
+.diseases-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:40px}
+.disease-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:16px;padding:28px;
+  transition:.3s;position:relative;overflow:hidden;
+}
+.disease-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:{{ 'var(--red)' }};
+}
+.disease-card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.disease-icon{font-size:40px;margin-bottom:14px;display:block}
+.disease-name{
+  font-family:'Syne',sans-serif;font-size:18px;font-weight:800;
+  color:var(--white);margin-bottom:10px;
+}
+.disease-desc{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:18px}
+.sub-label{
+  font-size:11px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.5px;margin-bottom:8px;
+}
+.tag-list{display:flex;flex-wrap:wrap;gap:6px}
+.tag{
+  padding:4px 10px;border-radius:6px;font-size:12px;font-weight:500;
+  background:var(--bg);color:var(--muted);border:1px solid var(--border);
+}
+.divider{height:1px;background:var(--border);margin:14px 0}
+
+.info-banner{
+  background:linear-gradient(135deg,#1a1a2e,#16213e);
+  border:1px solid rgba(52,152,219,.3);border-radius:16px;
+  padding:32px;margin-bottom:40px;text-align:center;
+}
+.info-banner h3{font-family:'Syne',sans-serif;font-size:20px;color:var(--white);margin-bottom:8px}
+.info-banner p{color:var(--muted);font-size:14px;line-height:1.6;max-width:600px;margin:0 auto}
+</style>
+{% endblock %}
+{% block content %}
+<div class="library-wrap">
+
+  <div class="page-header" style="padding-top:0">
+    <h1 class="page-title">Disease <span>Library</span></h1>
+    <p class="page-sub">Learn about major cardiovascular conditions — symptoms, causes, and prevention</p>
+  </div>
+
+  <div class="info-banner">
+    <h3>🏥 Knowledge is Prevention</h3>
+    <p>Understanding cardiovascular conditions helps you recognize warning signs early.
+    This library covers the 6 most common heart-related diseases, their symptoms, and how to prevent them.</p>
+  </div>
+
+  <div class="diseases-grid">
+    {% for d in diseases %}
+    <div class="disease-card" style="border-top-color:{{ d.color }}">
+      <span class="disease-icon">{{ d.icon }}</span>
+      <div class="disease-name">{{ d.name }}</div>
+      <div class="disease-desc">{{ d.desc }}</div>
+
+      <div class="sub-label" style="color:{{ d.color }}">⚠ Symptoms</div>
+      <div class="tag-list">
+        {% for s in d.symptoms %}
+        <span class="tag" style="border-color:{{ d.color }}40;color:#ccc">{{ s }}</span>
+        {% endfor %}
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="sub-label" style="color:var(--green)">✅ Prevention</div>
+      <div class="tag-list">
+        {% for p in d.prevention %}
+        <span class="tag" style="border-color:#27ae6040;color:#aaa">{{ p }}</span>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div style="text-align:center;margin-top:48px">
+    <p style="color:var(--muted);font-size:14px;margin-bottom:20px">
+      Ready to check your personal cardiovascular risk?
+    </p>
+    {% if session.user_id %}
+    <a href="/assessment" class="btn btn-red" style="font-size:15px;padding:14px 32px">🫀 Take Risk Assessment →</a>
+    {% else %}
+    <a href="/register" class="btn btn-red" style="font-size:15px;padding:14px 32px">🚀 Get Started Free →</a>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% block title %}Analytics — CardioInsight{% endblock %}
+{% block head %}
+<style>
+.analytics-wrap{max-width:1100px;margin:0 auto;padding:40px 24px 80px}
+.stats-row{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-bottom:32px}
+.stat-box{
+  background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:20px 14px;text-align:center;
+}
+.stat-box .val{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--white)}
+.stat-box .lbl{margin-top:5px;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.chart-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:16px;padding:24px;
+}
+.chart-card.full{grid-column:1/-1}
+.chart-card img{width:100%;border-radius:10px;margin-top:12px}
+.chart-title{font-size:14px;font-weight:700;color:var(--white)}
+.chart-desc{font-size:12px;color:var(--muted);margin-top:4px}
+
+.model-section{
+  background:var(--card);border:1px solid var(--border);border-radius:16px;
+  padding:28px;margin-bottom:20px;
+}
+.accuracy-bar-wrap{margin-top:16px}
+.metric-row{display:flex;align-items:center;gap:16px;margin-bottom:12px}
+.metric-name{font-size:13px;color:var(--muted);width:90px;flex-shrink:0}
+.bar-track{flex:1;height:10px;background:var(--bg);border-radius:6px;overflow:hidden}
+.bar-fill{height:100%;border-radius:6px;transition:width 1s ease}
+.metric-pct{font-size:13px;font-weight:700;color:var(--white);width:50px;text-align:right}
+</style>
+{% endblock %}
+{% block content %}
+<div class="analytics-wrap">
+
+  <div class="page-header" style="text-align:left;padding-top:0;margin-bottom:28px">
+    <h1 class="page-title" style="font-size:32px">Data <span>Analytics</span></h1>
+    <p class="page-sub">Insights from 10,000 patient records</p>
+  </div>
+
+  <!-- Key Stats -->
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="val" style="color:var(--red)">{{ stats.total_records|int // 1000 }}K</div>
+      <div class="lbl">Total Records</div>
+    </div>
+    <div class="stat-box">
+      <div class="val" style="color:var(--orange)">{{ stats.avg_age }}</div>
+      <div class="lbl">Average Age</div>
+    </div>
+    <div class="stat-box">
+      <div class="val" style="color:var(--red)">{{ stats.high_chol_pct }}%</div>
+      <div class="lbl">High Cholesterol</div>
+    </div>
+    <div class="stat-box">
+      <div class="val" style="color:var(--orange)">{{ stats.high_bp_pct }}%</div>
+      <div class="lbl">High Blood Pressure</div>
+    </div>
+    <div class="stat-box">
+      <div class="val" style="color:var(--purple)">{{ stats.disease_pct }}%</div>
+      <div class="lbl">Disease Rate</div>
+    </div>
+    <div class="stat-box">
+      <div class="val" style="color:var(--blue)">{{ stats.smoker_pct }}%</div>
+      <div class="lbl">Smokers</div>
+    </div>
+  </div>
+
+  <!-- Model Performance -->
+  <div class="model-section">
+    <div class="chart-title">🤖 Random Forest — Model Performance</div>
+    <div class="chart-desc">Trained on 8,000 records · Tested on 2,000 records</div>
+    <div class="accuracy-bar-wrap">
+      <div class="metric-row">
+        <span class="metric-name">Accuracy</span>
+        <div class="bar-track"><div class="bar-fill" style="width:{{ metrics.accuracy }}%;background:var(--green)"></div></div>
+        <span class="metric-pct">{{ metrics.accuracy }}%</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-name">AUC-ROC</span>
+        <div class="bar-track"><div class="bar-fill" style="width:{{ (metrics.auc*100)|round|int }}%;background:var(--blue)"></div></div>
+        <span class="metric-pct">{{ (metrics.auc*100)|round(1) }}%</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-name">Precision</span>
+        <div class="bar-track"><div class="bar-fill" style="width:89%;background:var(--orange)"></div></div>
+        <span class="metric-pct">89.0%</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-name">Recall</span>
+        <div class="bar-track"><div class="bar-fill" style="width:93%;background:var(--purple)"></div></div>
+        <span class="metric-pct">93.0%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Grid -->
+  <div class="charts-grid">
+
+    <div class="chart-card full">
+      <div class="chart-title">🤖 Confusion Matrix</div>
+      <div class="chart-desc">Actual vs Predicted outcomes from the Random Forest model on 2,000 test samples</div>
+      <img src="/static/charts/confusion_matrix.png" alt="Confusion Matrix">
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">📊 Age Group vs Heart Disease Risk</div>
+      <div class="chart-desc">Risk percentage increases significantly after age 50</div>
+      <img src="/static/charts/age_risk.png" alt="Age Risk Chart">
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">🏃 Exercise Habit vs Risk</div>
+      <div class="chart-desc">Patients who don't exercise show dramatically higher risk</div>
+      <img src="/static/charts/exercise.png" alt="Exercise Chart">
+    </div>
+
+    <div class="chart-card full">
+      <div class="chart-title">🔴 Cholesterol Distribution</div>
+      <div class="chart-desc">Cholesterol spread across heart disease vs healthy patients. Red dashed line = risk threshold (200 mg/dl)</div>
+      <img src="/static/charts/cholesterol.png" alt="Cholesterol Chart">
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">🚬 Smoking Distribution</div>
+      <div class="chart-desc">Proportion of smokers vs non-smokers in the dataset</div>
+      <img src="/static/charts/smoking.png" alt="Smoking Chart">
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">🔗 Correlation Heatmap</div>
+      <div class="chart-desc">Relationship strength between all cardiovascular health indicators</div>
+      <img src="/static/charts/heatmap.png" alt="Heatmap">
+    </div>
+
+    <div class="chart-card full">
+      <div class="chart-title">⚡ Cholesterol vs Blood Pressure (Scatter)</div>
+      <div class="chart-desc">Green = healthy patients, Red = heart disease. Each dot is one patient from 2,000 samples.</div>
+      <img src="/static/charts/scatter.png" alt="Scatter Chart">
+    </div>
+
+  </div>
+</div>
+{% endblock %}

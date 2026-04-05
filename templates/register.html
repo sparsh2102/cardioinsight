@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Register — CardioInsight{% endblock %}
+{% block head %}
+<style>
+.auth-wrap{min-height:80vh;display:flex;align-items:center;justify-content:center;padding:40px 24px}
+.auth-box{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:44px 40px;width:100%;max-width:440px}
+.auth-logo{text-align:center;margin-bottom:28px}
+.auth-logo h2{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--white)}
+.auth-logo h2 span{color:var(--red)}
+.auth-logo p{margin-top:6px;color:var(--muted);font-size:14px}
+.form-group{margin-bottom:18px}
+.form-group label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:7px;text-transform:uppercase;letter-spacing:.5px}
+.form-group input{
+  width:100%;padding:12px 16px;
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:10px;color:var(--text);font-family:inherit;font-size:14px;transition:.2s;
+}
+.form-group input:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px rgba(231,76,60,.15)}
+.auth-btn{width:100%;padding:13px;font-size:15px;margin-top:8px}
+.auth-footer{text-align:center;margin-top:20px;font-size:13px;color:var(--muted)}
+.auth-footer a{color:var(--red);font-weight:600}
+</style>
+{% endblock %}
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-box">
+    <div class="auth-logo">
+      <h2>Cardio<span>Insight</span></h2>
+      <p>Create your free account</p>
+    </div>
+    <form method="POST" action="/register">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" name="name" placeholder="Satyam Kumar" required>
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" name="email" placeholder="you@example.com" required>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Min. 6 characters" required>
+      </div>
+      <div class="form-group">
+        <label>Confirm Password</label>
+        <input type="password" name="confirm_password" placeholder="Repeat password" required>
+      </div>
+      <button type="submit" class="btn btn-red auth-btn">Create Account →</button>
+    </form>
+    <div class="auth-footer">
+      Already have an account? <a href="/login">Sign in</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

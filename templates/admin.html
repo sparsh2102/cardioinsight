@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+{% block title %}Admin Panel — CardioInsight{% endblock %}
+{% block head %}
+<style>
+.admin-wrap{max-width:1100px;margin:0 auto;padding:40px 24px 80px}
+.admin-header{
+  background:linear-gradient(135deg,#1a0a0a,#2d1212);
+  border:1px solid rgba(231,76,60,.4);border-radius:16px;
+  padding:24px 28px;margin-bottom:28px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.admin-badge{
+  background:rgba(231,76,60,.2);border:1px solid rgba(231,76,60,.4);
+  color:var(--red);font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.5px;
+  padding:4px 10px;border-radius:6px;
+}
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:28px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;text-align:center}
+.kpi .val{font-family:'Syne',sans-serif;font-size:30px;font-weight:800}
+.kpi .lbl{font-size:12px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.4px}
+.data-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:20px}
+.data-table{width:100%;border-collapse:collapse}
+.data-table th{background:var(--bg);padding:10px 14px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);border-bottom:1px solid var(--border)}
+.data-table td{padding:11px 14px;border-bottom:1px solid var(--border);font-size:13px}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:var(--bg)}
+.risk-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+</style>
+{% endblock %}
+{% block content %}
+<div class="admin-wrap">
+  <div class="admin-header">
+    <div>
+      <h2 style="font-family:'Syne',sans-serif;font-size:22px;color:var(--white)">
+        Admin Panel <span class="admin-badge">Restricted</span>
+      </h2>
+      <p style="color:var(--muted);font-size:13px;margin-top:4px">System-wide overview of CardioInsight</p>
+    </div>
+    <a href="/dashboard" class="btn btn-outline btn-sm">← Back to Dashboard</a>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="val" style="color:var(--blue)">{{ stats.total_users }}</div>
+      <div class="lbl">Total Users</div>
+    </div>
+    <div class="kpi">
+      <div class="val" style="color:var(--orange)">{{ stats.total_assessments }}</div>
+      <div class="lbl">Assessments</div>
+    </div>
+    <div class="kpi">
+      <div class="val" style="color:var(--red)">{{ stats.high_risk_count }}</div>
+      <div class="lbl">High Risk</div>
+    </div>
+    <div class="kpi">
+      <div class="val" style="color:var(--green)">{{ stats.low_risk_count }}</div>
+      <div class="lbl">Low Risk</div>
+    </div>
+    <div class="kpi">
+      <div class="val" style="color:var(--purple)">{{ stats.avg_risk }}%</div>
+      <div class="lbl">Avg Risk Score</div>
+    </div>
+  </div>
+
+  <!-- Risk Distribution -->
+  <div class="data-card">
+    <div class="card-title">📊 Risk Distribution</div>
+    <div style="margin-top:16px">
+      {% set high_pct  = (stats.high_risk_count  / stats.total_assessments * 100)|round(1) if stats.total_assessments else 0 %}
+      {% set mod_pct   = (stats.mod_risk_count   / stats.total_assessments * 100)|round(1) if stats.total_assessments else 0 %}
+      {% set low_pct   = (stats.low_risk_count   / stats.total_assessments * 100)|round(1) if stats.total_assessments else 0 %}
+
+      <div style="margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+          <span style="font-size:13px;color:var(--red)">High Risk</span>
+          <span style="font-size:13px;font-weight:700;color:var(--white)">{{ stats.high_risk_count }} ({{ high_pct }}%)</span>
+        </div>
+        <div style="height:10px;background:var(--bg);border-radius:6px;overflow:hidden">
+          <div style="height:100%;width:{{ high_pct }}%;background:var(--red);border-radius:6px;transition:width 1s"></div>
+        </div>
+      </div>
+      <div style="margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+          <span style="font-size:13px;color:var(--orange)">Moderate Risk</span>
+          <span style="font-size:13px;font-weight:700;color:var(--white)">{{ stats.mod_risk_count }} ({{ mod_pct }}%)</span>
+        </div>
+        <div style="height:10px;background:var(--bg);border-radius:6px;overflow:hidden">
+          <div style="height:100%;width:{{ mod_pct }}%;background:var(--orange);border-radius:6px;transition:width 1s"></div>
+        </div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+          <span style="font-size:13px;color:var(--green)">Low Risk</span>
+          <span style="font-size:13px;font-weight:700;color:var(--white)">{{ stats.low_risk_count }} ({{ low_pct }}%)</span>
+        </div>
+        <div style="height:10px;background:var(--bg);border-radius:6px;overflow:hidden">
+          <div style="height:100%;width:{{ low_pct }}%;background:var(--green);border-radius:6px;transition:width 1s"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- All Assessments -->
+  <div class="data-card">
+    <div class="card-title">📋 All Assessments (Latest 50)</div>
+    <table class="data-table" style="margin-top:16px">
+      <tr>
+        <th>#</th><th>Name</th><th>Age</th>
+        <th>Cholesterol</th><th>BP</th><th>Risk Score</th>
+        <th>Result</th><th>Date</th>
+      </tr>
+      {% for a in assessments %}
+      <tr>
+        <td style="color:var(--muted)">{{ loop.index }}</td>
+        <td><b>{{ a.name }}</b></td>
+        <td>{{ a.age }}</td>
+        <td>{{ a.cholesterol }}</td>
+        <td>{{ a.bp }}</td>
+        <td><b>{{ a.risk_score }}%</b></td>
+        <td>
+          {% if a.risk_label == 'High Risk' %}
+            <span class="risk-dot" style="background:var(--red)"></span>
+            <span style="color:#f87171;font-size:12px;font-weight:700">High Risk</span>
+          {% elif a.risk_label == 'Moderate Risk' %}
+            <span class="risk-dot" style="background:var(--orange)"></span>
+            <span style="color:#fbbf24;font-size:12px;font-weight:700">Moderate</span>
+          {% else %}
+            <span class="risk-dot" style="background:var(--green)"></span>
+            <span style="color:#4ade80;font-size:12px;font-weight:700">Low Risk</span>
+          {% endif %}
+        </td>
+        <td style="color:var(--muted)">{{ a.created_at[:16] }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="8" style="text-align:center;color:var(--muted);padding:32px">No assessments yet.</td></tr>
+      {% endfor %}
+    </table>
+  </div>
+
+  <!-- All Users -->
+  <div class="data-card">
+    <div class="card-title">👥 Registered Users</div>
+    <table class="data-table" style="margin-top:16px">
+      <tr>
+        <th>#</th><th>Name</th><th>Email</th><th>Registered</th>
+      </tr>
+      {% for u in users %}
+      <tr>
+        <td style="color:var(--muted)">{{ u.id }}</td>
+        <td><b>{{ u.name }}</b></td>
+        <td style="color:var(--muted)">{{ u.email }}</td>
+        <td style="color:var(--muted)">{{ u.created_at[:10] if u.created_at else 'N/A' }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="4" style="text-align:center;color:var(--muted);padding:32px">No users registered.</td></tr>
+      {% endfor %}
+    </table>
+  </div>
+
+</div>
+{% endblock %}

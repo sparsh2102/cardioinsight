@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block title %}Assessment — CardioInsight{% endblock %}
+{% block head %}
+<style>
+.assess-wrap{max-width:720px;margin:0 auto;padding:40px 24px 80px}
+.assess-header{text-align:center;margin-bottom:40px}
+.form-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:36px}
+.section-label{
+  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;
+  color:var(--red);margin-bottom:20px;padding-bottom:8px;
+  border-bottom:1px solid var(--border);
+}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:28px}
+.form-group{display:flex;flex-direction:column;gap:7px}
+.form-group label{font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.form-group label span{font-weight:400;color:#555;text-transform:none;letter-spacing:0}
+.form-control{
+  padding:12px 14px;background:var(--bg);
+  border:1px solid var(--border);border-radius:10px;
+  color:var(--text);font-family:inherit;font-size:14px;transition:.2s;
+}
+.form-control:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px rgba(231,76,60,.12)}
+select.form-control option{background:var(--bg)}
+.hint{font-size:11px;color:#555;margin-top:2px}
+.submit-row{display:flex;gap:16px;margin-top:8px}
+.submit-row .btn{flex:1;justify-content:center;padding:14px;font-size:15px}
+</style>
+{% endblock %}
+{% block content %}
+<div class="assess-wrap">
+  <div class="assess-header">
+    <h1 class="page-title">Heart Risk <span>Assessment</span></h1>
+    <p class="page-sub">Fill in your details accurately for the best results. All data is private.</p>
+  </div>
+
+  <div class="form-card">
+    <form method="POST" action="/predict">
+
+      <div class="section-label">👤 Personal Information</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" name="name" class="form-control"
+                 placeholder="{{ session.user_name }}" value="{{ session.user_name }}">
+        </div>
+        <div class="form-group">
+          <label>Age <span>(years)</span></label>
+          <input type="number" name="age" class="form-control"
+                 placeholder="e.g. 45" min="18" max="120" required>
+        </div>
+        <div class="form-group">
+          <label>Sex</label>
+          <select name="sex" class="form-control" required>
+            <option value="">Select...</option>
+            <option value="1">Male</option>
+            <option value="0">Female</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="section-label">🩺 Clinical Measurements</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Cholesterol <span>(mg/dl)</span></label>
+          <input type="number" name="cholesterol" class="form-control"
+                 placeholder="e.g. 210" min="100" max="600" required>
+          <span class="hint">Normal: &lt; 200 mg/dl</span>
+        </div>
+        <div class="form-group">
+          <label>Blood Pressure <span>(mmHg)</span></label>
+          <input type="number" name="bp" class="form-control"
+                 placeholder="e.g. 130" min="60" max="250" required>
+          <span class="hint">Normal: &lt; 130 mmHg</span>
+        </div>
+        <div class="form-group">
+          <label>Max Heart Rate <span>(bpm)</span></label>
+          <input type="number" name="heart_rate" class="form-control"
+                 placeholder="e.g. 150" min="40" max="250" required>
+          <span class="hint">Normal resting: 60–100 bpm</span>
+        </div>
+        <div class="form-group">
+          <label>Vessels Blocked (CA)</label>
+          <select name="ca" class="form-control" required>
+            <option value="">Select...</option>
+            <option value="0">0 — None</option>
+            <option value="1">1 vessel</option>
+            <option value="2">2 vessels</option>
+            <option value="3">3 vessels</option>
+          </select>
+          <span class="hint">Number of major vessels blocked (from angiogram, or choose 0 if unsure)</span>
+        </div>
+      </div>
+
+      <div class="section-label">🏃 Lifestyle Factors</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Do you smoke?</label>
+          <select name="smoking" class="form-control" required>
+            <option value="">Select...</option>
+            <option value="1">Yes, I smoke</option>
+            <option value="0">No, I don't smoke</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Do you exercise regularly?</label>
+          <select name="exercise" class="form-control" required>
+            <option value="">Select...</option>
+            <option value="1">Yes, regularly</option>
+            <option value="0">No / rarely</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Exercise-induced chest pain?</label>
+          <select name="exang" class="form-control" required>
+            <option value="">Select...</option>
+            <option value="1">Yes</option>
+            <option value="0">No</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="submit-row">
+        <a href="/dashboard" class="btn btn-outline">← Cancel</a>
+        <button type="submit" class="btn btn-red">🤖 Calculate My Risk Score →</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+{% endblock %}
